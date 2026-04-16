@@ -1,8 +1,110 @@
+use std::collections::HashMap;
+
 fn main() {
     //ex1();
-    ex2();
+    //ex2();
+    ex3();
 }
 
+#[derive(Debug)]
+enum TaskStatus {
+    Incomplete,
+    Complete
+}
+
+trait Task {
+    fn description(&self) -> String;
+    fn status(&self) -> TaskStatus;
+    fn mark_complete(&mut self);
+}
+
+impl Task for String {
+    fn description(&self) -> String {
+        self.clone()
+    }
+
+    fn status(&self) -> TaskStatus {
+        TaskStatus::Incomplete
+    }
+
+    fn mark_complete(&mut self) {
+        // Implementation for marking a task as complete
+    }
+}
+
+
+fn ex3() {
+
+    let mut tasks: HashMap<i32, (String, TaskStatus)> = HashMap::new();
+    let mut next_task_id = 1;
+
+    loop {
+        println!("Bienvenue dans votre application de To-do list");
+        println!("1. Ajouter une tâche");
+        println!("2. Afficher les tâches");
+        println!("3. Marquer une tâche comme terminée");
+        println!("4. Supprimer une tâche");
+        println!("5. Quitter");
+
+        let mut choice = String::new();
+        std::io::stdin().read_line(&mut choice).expect("Erreur de lecture");
+        let choice: u32 = choice.trim().parse().expect("Veuillez entrer un nombre valide");
+
+        match choice {
+            1 => {
+                println!("Entrez la description de la tâche :");
+                let mut description = String::new();
+                std::io::stdin().read_line(&mut description).expect("Erreur de lecture");
+                let description = description.trim().to_string();
+
+                tasks.insert(next_task_id, (description, TaskStatus::Incomplete));
+                println!("Tâche ajoutée avec l'ID : {}", next_task_id);
+                next_task_id += 1;
+            },
+            2 => {
+                println!("Tâches actuelles :");
+                for (id, (description, status)) in &tasks {
+                    println!("ID : {}, Description : {}, Statut : {:?}", id, description, status);
+                }
+            },
+            3 => {
+                println!("Entrez l'ID de la tâche à marquer comme terminée :");
+                let mut id_input = String::new();
+                std::io::stdin().read_line(&mut id_input).expect("Erreur de lecture");
+                let id: i32 = id_input.trim().parse().expect("Veuillez entrer un nombre valide");
+
+                if let Some(task) = tasks.get_mut(&id) {
+                    task.1 = TaskStatus::Complete;
+                    println!("Tâche ID {} marquée comme terminée.", id);
+                } else {
+                    println!("Tâche avec l'ID {} non trouvée.", id);
+                }
+            },
+            4 => {
+                println!("Entrez l'ID de la tâche à supprimer :");
+                let mut id_input = String::new();
+                std::io::stdin().read_line(&mut id_input).expect("Erreur de lecture");
+                let id: i32 = id_input.trim().parse().expect("Veuillez entrer un nombre valide");
+
+                if tasks.remove(&id).is_some() {
+                    println!("Tâche ID {} supprimée.", id);
+                } else {
+                    println!("Tâche avec l'ID {} non trouvée.", id);
+                }
+            },
+            5 => {
+                println!("Merci d'avoir utilisé notre application de To-do list. Au revoir !");
+                break;
+            },
+            _ => println!("Option invalide, veuillez réessayer."),
+        }
+    }
+
+
+
+    
+
+}
 fn ex2() {
     println!("Bienvenue sur votre calculatrice personnelle !");
 
