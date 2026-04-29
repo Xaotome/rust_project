@@ -5,7 +5,41 @@ fn main() {
     //ex1();
     //ex2();
     //ex3();
-    ex4();
+    //ex4();
+    ex5();
+}
+
+fn ex5() {
+    // Récupérer la phrase de l'utilisateur
+    println!("Veuillez entrer votre phrase :");
+    
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).expect("Erreur de lecture");
+
+    let trimmed_input = input.trim();
+
+    // Récupérer le nombre de voyelles
+    let vowels = "aeiouyAEIOUY";
+    let vowel_count = trimmed_input.chars().filter(|c| vowels.contains(*c)).count();
+    println!("Nombre de voyelles : {}", vowel_count);
+
+    // Gérer la question du palindrome
+    let clean_input = trimmed_input.chars().filter(|c| c.is_alphanumeric()).collect::<String>();
+    let is_palindrome = clean_input.to_lowercase().chars().eq(clean_input.to_lowercase().chars().rev());
+    if is_palindrome {
+        println!("La phrase est un palindrome.");
+    } else {
+        println!("La phrase n'est pas un palindrome.");
+    }
+
+    // Tri des mots par longueur
+    let mut words: Vec<&str> = trimmed_input.split_whitespace().collect();
+    words.sort_by_key(|&word| word.len());
+    println!("Mots triés par longueur : {:?}", words);
+
+    // Conversion en acronyme
+    let acronym: String = trimmed_input.split_whitespace().map(|w| w.chars().next().unwrap_or_default()).collect();
+    println!("Acronyme : {}", acronym.to_uppercase());
 }
 
 fn ex4() {
