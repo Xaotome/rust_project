@@ -1,9 +1,76 @@
 use std::collections::HashMap;
+use rand::RngExt;
 
 fn main() {
     //ex1();
     //ex2();
-    ex3();
+    //ex3();
+    ex4();
+}
+
+fn ex4() {
+    let mut rng = rand::rng();
+    let secret_number = rng.random_range(1..=100);
+
+    let mut guesses: Vec<u32> = Vec::new();
+    let mut remaining_guesses = 10;
+
+    let mut scores: HashMap<String, u32> = HashMap::new();
+
+    loop {
+        println!("Devinez le nombre secret entre 1 et 100 :");
+
+        if !guesses.is_empty() {
+            println!("Vos tentatives précédentes : {:?}", guesses);
+        }
+
+        let mut guess = String::new();
+        std::io::stdin().read_line(&mut guess).expect("Erreur de lecture");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Veuillez entrer un nombre valide.");
+                continue;
+            }
+        };
+
+        guesses.push(guess);
+
+        match guess.cmp(&secret_number) {
+            std::cmp::Ordering::Less => {
+                println!("Trop petit !");
+                if remaining_guesses > 0 {
+                    remaining_guesses -= 1;
+                }
+            },
+            std::cmp::Ordering::Greater => {
+                println!("Trop grand !");
+                if remaining_guesses > 0 {
+                    remaining_guesses -= 1;
+                }
+            },
+            std::cmp::Ordering::Equal => {
+                println!("Félicitations ! Vous avez deviné le nombre secret !");
+                break;
+            }
+        }
+    }
+
+    // Gestion du score final
+
+    let final_score = remaining_guesses * 10; // Par exemple, chaque tentative restante vaut 10 points
+    println!("Votre score final est : {}", final_score);
+
+    // Demander au jour son nom 
+
+    let mut player_name = String::new();
+    println!("Entrez votre nom pour enregistrer votre score :");
+    std::io::stdin().read_line(&mut player_name).expect("Erreur de lecture");
+    let player_name = player_name.trim().to_string();
+
+    scores.entry(player_name).or_insert(final_score);
+    println!("Meilleurs scores : {:?}", scores);
 }
 
 #[derive(Debug)]
